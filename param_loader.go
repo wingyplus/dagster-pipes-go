@@ -9,12 +9,10 @@ import (
 	"os"
 )
 
-type Value json.RawMessage
-
 type LoadParams interface {
 	IsDagsterPipesProcess() bool
-	LoadContextParams() (map[string]Value, error)
-	LoadMessageParams() (map[string]Value, error)
+	LoadContextParams() (map[string]json.RawMessage, error)
+	LoadMessageParams() (map[string]json.RawMessage, error)
 }
 
 type ParamsError struct {
