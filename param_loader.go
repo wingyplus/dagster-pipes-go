@@ -9,7 +9,7 @@ import (
 	"os"
 )
 
-type Value any
+type Value json.RawMessage
 
 type LoadParams interface {
 	IsDagsterPipesProcess() bool
@@ -58,7 +58,7 @@ func (loader *EnvVarLoader) IsDagsterPipesProcess() bool {
 	return ok
 }
 
-func (loader *EnvVarLoader) LoadContextParams() (map[string]Value, error) {
+func (loader *EnvVarLoader) LoadContextParams() (map[string]json.RawMessage, error) {
 	param, ok := os.LookupEnv(DAGSTER_PIPES_CONTEXT_ENV_VAR)
 	if !ok {
 		return nil, &ParamsError{
@@ -75,7 +75,7 @@ func (loader *EnvVarLoader) LoadContextParams() (map[string]Value, error) {
 	return result, nil
 }
 
-func (loader *EnvVarLoader) LoadMessageParams() (map[string]Value, error) {
+func (loader *EnvVarLoader) LoadMessageParams() (map[string]json.RawMessage, error) {
 	param, ok := os.LookupEnv(DAGSTER_PIPES_MESSAGES_ENV_VAR)
 	if !ok {
 		return nil, &ParamsError{
@@ -92,7 +92,7 @@ func (loader *EnvVarLoader) LoadMessageParams() (map[string]Value, error) {
 	return result, nil
 }
 
-func DecodeEnvVar(param string) (map[string]Value, error) {
+func DecodeEnvVar(param string) (map[string]json.RawMessage, error) {
 	zlibCompressedBytes, err := base64.StdEncoding.DecodeString(param)
 	if err != nil {
 		return nil, err
@@ -103,7 +103,7 @@ func DecodeEnvVar(param string) (map[string]Value, error) {
 		return nil, err
 	}
 
-	var result map[string]Value
+	var result map[string]json.RawMessage
 	if err := json.NewDecoder(r).Decode(&result); err != nil {
 		return nil, err
 	}
