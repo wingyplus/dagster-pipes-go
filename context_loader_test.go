@@ -53,4 +53,45 @@ func TestDefaultLoader_LoadContext(t *testing.T) {
 		require.NoError(t, err)
 		require.Equal(t, expected, contextData)
 	})
+
+	t.Run("prioritizes file path when both are present", func(t *testing.T) {
+		// Create temp file with different data
+		f, err := os.CreateTemp("", "*")
+		require.NoError(t, err)
+		defer f.Close()
+
+		fileData := `
+{
+	"asset_keys": ["asset_from_path"],
+	"extras": {"key_from_path": "value_from_path"},
+	"retry_number": 0,
+	"run_id": "id_from_path"
+}`
+		f.Write([]byte(fileData))
+
+		// Provide both path and data
+		param := map[string]json.RawMessage{
+			"path": json.RawMessage([]byte(`"` + f.Name() + `"`)),
+			"data": json.RawMessage([]byte(`{
+				"asset_keys": ["asset_from_data"],
+				"extras": {"key_from_data": "value_from_data"},
+				"retry_number": 0,
+				"run_id": "id_from_data"
+			}`)),
+		}
+
+		contextData, err := loader.LoadContext(param)
+		require.NoError(t, err)
+
+		// Should use data from file, not from data param
+		expectedFromPath := &PipesContextData{
+			AssetKeys: []string{"asset_from_path"},
+			Extras: map[string]interface{}{
+				"key_from_path": "value_from_path",
+			},
+			RetryNumber: 0,
+			RunID:       "id_from_path",
+		}
+		require.Equal(t, expectedFromPath, contextData)
+	})
 }
