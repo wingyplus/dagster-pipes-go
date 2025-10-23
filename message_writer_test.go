@@ -7,6 +7,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/wingyplus/dagster_pipes_go/types"
 )
 
 func TestFileChannel(t *testing.T) {
@@ -15,16 +16,16 @@ func TestFileChannel(t *testing.T) {
 	defer f.Close()
 
 	channel := &FileChannel{Path: f.Name()}
-	err = channel.Write(&PipesMessage{Method: Opened, Params: nil})
+	err = channel.Write(&types.PipesMessage{Method: types.Opened, Params: nil})
 	require.NoError(t, err)
 
 	content, err := io.ReadAll(f)
 	require.NoError(t, err)
 
-	var message PipesMessage
+	var message types.PipesMessage
 	err = json.Unmarshal(content, &message)
 	require.NoError(t, err)
-	require.Equal(t, Opened, message.Method)
+	require.Equal(t, types.Opened, message.Method)
 	require.Nil(t, message.Params)
 }
 

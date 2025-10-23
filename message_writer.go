@@ -4,17 +4,19 @@ import (
 	"encoding/json"
 	"fmt"
 	"os"
+
+	"github.com/wingyplus/dagster_pipes_go/types"
 )
 
 type MessageWriterChannel interface {
-	Write(*PipesMessage) error
+	Write(*types.PipesMessage) error
 }
 
 type FileChannel struct {
 	Path string
 }
 
-func (channel *FileChannel) Write(message *PipesMessage) error {
+func (channel *FileChannel) Write(message *types.PipesMessage) error {
 	f, err := os.OpenFile(channel.Path, os.O_CREATE|os.O_APPEND|os.O_WRONLY, os.ModeAppend)
 	if err != nil {
 		return err
@@ -69,4 +71,14 @@ func (writer *DefaultMessageWriter) Open(params map[string]json.RawMessage) Mess
 	// }
 
 	return nil
+}
+
+func (writer *DefaultMessageWriter) GetOpenedPayload() map[string]any {
+	return map[string]any{
+		"extras": writer.GetOpenedExtras(),
+	}
+}
+
+func (writer *DefaultMessageWriter) GetOpenedExtras() map[string]any {
+	return make(map[string]any)
 }

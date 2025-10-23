@@ -6,6 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
+	"github.com/wingyplus/dagster_pipes_go/types"
 )
 
 func TestDefaultLoader_LoadContext(t *testing.T) {
@@ -22,7 +23,7 @@ func TestDefaultLoader_LoadContext(t *testing.T) {
 	"run_id": "012345"
 }
 `
-	expected := &PipesContextData{
+	expected := &types.PipesContextData{
 		AssetKeys: []string{"asset1", "asset2"},
 		Extras: map[string]interface{}{
 			"key": "value",
@@ -30,7 +31,7 @@ func TestDefaultLoader_LoadContext(t *testing.T) {
 		RetryNumber: 0,
 		RunID:       "012345",
 	}
-	loader := NewDefaultLoader()
+	loader := NewDefaultContextLoader()
 
 	t.Run("from file", func(t *testing.T) {
 		f, err := os.CreateTemp("", "*")
@@ -84,7 +85,7 @@ func TestDefaultLoader_LoadContext(t *testing.T) {
 		require.NoError(t, err)
 
 		// Should use data from file, not from data param
-		expectedFromPath := &PipesContextData{
+		expectedFromPath := &types.PipesContextData{
 			AssetKeys: []string{"asset_from_path"},
 			Extras: map[string]interface{}{
 				"key_from_path": "value_from_path",
