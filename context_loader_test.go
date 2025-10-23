@@ -6,7 +6,7 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/wingyplus/dagster_pipes_go/types"
+	"github.com/wingyplus/dagster-pipes-go/types"
 )
 
 func TestDefaultLoader_LoadContext(t *testing.T) {

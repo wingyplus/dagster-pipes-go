@@ -3,7 +3,7 @@ package metadata
 import (
 	"net/url"
 
-	"github.com/wingyplus/dagster_pipes_go/types"
+	"github.com/wingyplus/dagster-pipes-go/types"
 )
 
 func ptr[T any](v T) *T {

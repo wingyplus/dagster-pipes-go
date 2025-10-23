@@ -4,7 +4,7 @@ import (
 	"encoding/json"
 	"os"
 
-	"github.com/wingyplus/dagster_pipes_go/types"
+	"github.com/wingyplus/dagster-pipes-go/types"
 )
 
 type LoadContext interface {

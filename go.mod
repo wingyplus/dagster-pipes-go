@@ -1,4 +1,4 @@
-module github.com/wingyplus/dagster_pipes_go
+module github.com/wingyplus/dagster-pipes-go
 
 go 1.24.7
 

@@ -6,8 +6,8 @@ import (
 	"testing"
 
 	"github.com/stretchr/testify/require"
-	"github.com/wingyplus/dagster_pipes_go/metadata"
-	"github.com/wingyplus/dagster_pipes_go/types"
+	"github.com/wingyplus/dagster-pipes-go/metadata"
+	"github.com/wingyplus/dagster-pipes-go/types"
 )
 
 func TestWritePipesMetadata(t *testing.T) {

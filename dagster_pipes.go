@@ -3,7 +3,7 @@ package dagster_pipes
 import (
 	"encoding/json"
 
-	"github.com/wingyplus/dagster_pipes_go/types"
+	"github.com/wingyplus/dagster-pipes-go/types"
 )
 
 type PipesContext struct {
