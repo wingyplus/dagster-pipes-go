@@ -12,6 +12,7 @@ import (
 )
 
 func TestWritePipesMetadata(t *testing.T) {
+	t.Parallel()
 	file, context := singleAssetFileAndContext(t)
 
 	assetMetadata := map[string]*types.PipesMetadataValue{
@@ -73,6 +74,7 @@ func TestWritePipesMetadata(t *testing.T) {
 }
 
 func TestClosePipesContext(t *testing.T) {
+	t.Parallel()
 	file, context := singleAssetFileAndContext(t)
 
 	err := context.Close(PipesExceptionError(errors.New("some error")))

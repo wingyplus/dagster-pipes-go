@@ -10,6 +10,7 @@ import (
 )
 
 func TestDefaultLoader_LoadContext(t *testing.T) {
+	t.Parallel()
 	params := `
 {
 	"asset_keys": [
@@ -34,6 +35,7 @@ func TestDefaultLoader_LoadContext(t *testing.T) {
 	loader := NewDefaultContextLoader()
 
 	t.Run("from file", func(t *testing.T) {
+		t.Parallel()
 		f, err := os.CreateTemp("", "*")
 		require.NoError(t, err)
 		defer f.Close()
@@ -47,6 +49,7 @@ func TestDefaultLoader_LoadContext(t *testing.T) {
 	})
 
 	t.Run("from data", func(t *testing.T) {
+		t.Parallel()
 		param := map[string]json.RawMessage{
 			"data": json.RawMessage([]byte(params)),
 		}
@@ -56,6 +59,7 @@ func TestDefaultLoader_LoadContext(t *testing.T) {
 	})
 
 	t.Run("prioritizes file path when both are present", func(t *testing.T) {
+		t.Parallel()
 		// Create temp file with different data
 		f, err := os.CreateTemp("", "*")
 		require.NoError(t, err)

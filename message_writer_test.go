@@ -11,6 +11,7 @@ import (
 )
 
 func TestFileChannel(t *testing.T) {
+	t.Parallel()
 	f, err := os.CreateTemp("", "file_channel*")
 	require.NoError(t, err)
 	defer f.Close()
@@ -30,7 +31,9 @@ func TestFileChannel(t *testing.T) {
 }
 
 func TestDefaultMessageWriter(t *testing.T) {
+	t.Parallel()
 	t.Run("open with file path key", func(t *testing.T) {
+		t.Parallel()
 		writer := NewDefaultMessageWriter()
 		channel := writer.Open(map[string]json.RawMessage{
 			"path": json.RawMessage([]byte(`"tmp/my-file-path"`)),
