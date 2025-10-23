@@ -12,10 +12,18 @@ type PipesContext struct {
 }
 
 func (context *PipesContext) Close(exception *types.PipesException) error {
+	var params map[string]any = nil
 	if exception != nil {
-		// TODO: convert to params
+		params = map[string]any{
+			"cause":   exception.Cause,
+			"context": exception.Context,
+			"message": exception.Message,
+			"name":    exception.Name,
+			"stack":   exception.Stack,
+		}
 	}
-	panic("implements me")
+	closedMessage := types.NewMessage(types.Closed, params)
+	return context.Channel.Write(closedMessage)
 }
 
 func (context *PipesContext) ReportAssetMaterialization(
@@ -80,6 +88,7 @@ func OpenDasterPipes() (*PipesContext, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	messageParams, err := paramsLoader.LoadMessageParams()
 	if err != nil {
 		return nil, err

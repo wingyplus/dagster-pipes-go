@@ -3,46 +3,43 @@ package metadata
 import (
 	"net/url"
 
+	"github.com/wingyplus/dagster-pipes-go/internal/helper"
 	"github.com/wingyplus/dagster-pipes-go/types"
 )
-
-func ptr[T any](v T) *T {
-	return &v
-}
 
 func FromInt(n int64) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			Integer: ptr(n),
+			Integer: helper.Ptr(n),
 		},
-		Type: ptr(types.Int),
+		Type: helper.Ptr(types.Int),
 	}
 }
 
 func FromFloat(n float64) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			Double: ptr(n),
+			Double: helper.Ptr(n),
 		},
-		Type: ptr(types.Float),
+		Type: helper.Ptr(types.Float),
 	}
 }
 
 func FromBool(b bool) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			Bool: ptr(b),
+			Bool: helper.Ptr(b),
 		},
-		Type: ptr(types.Bool),
+		Type: helper.Ptr(types.Bool),
 	}
 }
 
 func FromText(s string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			String: ptr(s),
+			String: helper.Ptr(s),
 		},
-		Type: ptr(types.Text),
+		Type: helper.Ptr(types.Text),
 	}
 }
 
@@ -51,7 +48,7 @@ func FromJSON(m map[string]any) *types.PipesMetadataValue {
 		RawValue: &types.RawValue{
 			AnythingMap: m,
 		},
-		Type: ptr(types.JSON),
+		Type: helper.Ptr(types.JSON),
 	}
 }
 
@@ -60,7 +57,7 @@ func FromJSONArray(a []any) *types.PipesMetadataValue {
 		RawValue: &types.RawValue{
 			AnythingArray: a,
 		},
-		Type: ptr(types.JSON),
+		Type: helper.Ptr(types.JSON),
 	}
 }
 
@@ -71,78 +68,78 @@ func FromURL(url *url.URL) *types.PipesMetadataValue {
 func FromURLString(url string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			String: ptr(url),
+			String: helper.Ptr(url),
 		},
-		Type: ptr(types.URL),
+		Type: helper.Ptr(types.URL),
 	}
 }
 
 func FromPath(path string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			String: ptr(path),
+			String: helper.Ptr(path),
 		},
-		Type: ptr(types.Path),
+		Type: helper.Ptr(types.Path),
 	}
 }
 
 func FromNotebook(notebook string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			String: ptr(notebook),
+			String: helper.Ptr(notebook),
 		},
-		Type: ptr(types.Notebook),
+		Type: helper.Ptr(types.Notebook),
 	}
 }
 
 func FromMd(md string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			String: ptr(md),
+			String: helper.Ptr(md),
 		},
-		Type: ptr(types.Md),
+		Type: helper.Ptr(types.Md),
 	}
 }
 
 func FromTimestamp(timestamp float64) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			Double: ptr(timestamp),
+			Double: helper.Ptr(timestamp),
 		},
-		Type: ptr(types.Timestamp),
+		Type: helper.Ptr(types.Timestamp),
 	}
 }
 
 func FromAsset(asset string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			String: ptr(asset),
+			String: helper.Ptr(asset),
 		},
-		Type: ptr(types.Asset),
+		Type: helper.Ptr(types.Asset),
 	}
 }
 
 func FromJob(job string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			String: ptr(job),
+			String: helper.Ptr(job),
 		},
-		Type: ptr(types.Job),
+		Type: helper.Ptr(types.Job),
 	}
 }
 
 func FromDagsterRun(dagsterRun string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
-			String: ptr(dagsterRun),
+			String: helper.Ptr(dagsterRun),
 		},
-		Type: ptr(types.DagsterRun),
+		Type: helper.Ptr(types.DagsterRun),
 	}
 }
 
 func Null() *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: nil,
-		Type:     ptr(types.Null),
+		Type:     helper.Ptr(types.Null),
 	}
 }

@@ -2,6 +2,7 @@ package dagster_pipes
 
 import (
 	"encoding/json"
+	"errors"
 	"os"
 	"testing"
 
@@ -67,6 +68,32 @@ func TestWritePipesMetadata(t *testing.T) {
 				"job":         map[string]any{"raw_value": "some_job", "type": "job"},
 			},
 			"data_version": "v1",
+		},
+	}, &message)
+}
+
+func TestClosePipesContext(t *testing.T) {
+	file, context := singleAssetFileAndContext(t)
+
+	err := context.Close(PipesExceptionError(errors.New("some error")))
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(file.Path)
+	require.NoError(t, err)
+
+	var message types.PipesMessage
+	err = json.Unmarshal(content, &message)
+	require.NoError(t, err)
+
+	require.Equal(t, &types.PipesMessage{
+		DagsterPipesVersion: "0.1",
+		Method:              types.Closed,
+		Params: map[string]any{
+			"cause":   nil,
+			"context": nil,
+			"message": "some error",
+			"name":    "some error",
+			"stack":   nil,
 		},
 	}, &message)
 }
