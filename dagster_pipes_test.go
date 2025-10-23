@@ -105,6 +105,69 @@ func singleAssetFileAndContext(t *testing.T) (*FileChannel, *PipesContext) {
 	return fileAndContext(t, []string{"asset1"})
 }
 
+func TestReportAssetCheck(t *testing.T) {
+	t.Parallel()
+	file, context := singleAssetFileAndContext(t)
+
+	severity := types.AssetCheckSeverityERROR
+	assetMetadata := map[string]*types.PipesMetadataValue{
+		"check_result": metadata.FromText("check passed"),
+	}
+
+	err := context.ReportAssetCheck("my_check", true, "asset1", &severity, assetMetadata)
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(file.Path)
+	require.NoError(t, err)
+
+	var message types.PipesMessage
+	err = json.Unmarshal(content, &message)
+	require.NoError(t, err)
+
+	require.Equal(t, &types.PipesMessage{
+		DagsterPipesVersion: "0.1",
+		Method:              types.ReportAssetCheck,
+		Params: map[string]any{
+			"asset_key":  "asset1",
+			"check_name": "my_check",
+			"passed":     true,
+			"severity":   "ERROR",
+			"metadata": map[string]any{
+				"check_result": map[string]any{"raw_value": "check passed", "type": "text"},
+			},
+		},
+	}, &message)
+}
+
+func TestReportCustomMessage(t *testing.T) {
+	t.Parallel()
+	file, context := singleAssetFileAndContext(t)
+
+	payload := map[string]any{
+		"key": "value",
+	}
+
+	err := context.ReportCustomMessage(payload)
+	require.NoError(t, err)
+
+	content, err := os.ReadFile(file.Path)
+	require.NoError(t, err)
+
+	var message types.PipesMessage
+	err = json.Unmarshal(content, &message)
+	require.NoError(t, err)
+
+	require.Equal(t, &types.PipesMessage{
+		DagsterPipesVersion: "0.1",
+		Method:              types.ReportCustomMessage,
+		Params: map[string]any{
+			"payload": map[string]any{
+				"key": "value",
+			},
+		},
+	}, &message)
+}
+
 func multiAssetFileAndContext(t *testing.T) (*FileChannel, *PipesContext) {
 	t.Helper()
 	return fileAndContext(t, []string{"asset1", "asset2"})

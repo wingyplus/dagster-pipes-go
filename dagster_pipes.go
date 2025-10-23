@@ -54,11 +54,21 @@ func (context *PipesContext) ReportAssetCheck(
 	severity *types.AssetCheckSeverity,
 	metadata map[string]*types.PipesMetadataValue,
 ) error {
-	panic("implements me")
+	var params = map[string]any{
+		"asset_key":  assetKey,
+		"check_name": checkName,
+		"passed":     passed,
+		"severity":   severity,
+		"metadata":   metadata,
+	}
+	return context.Channel.Write(types.NewMessage(types.ReportAssetCheck, params))
 }
 
 func (context *PipesContext) ReportCustomMessage(payload any) error {
-	panic("implements me")
+	var params = map[string]any{
+		"payload": payload,
+	}
+	return context.Channel.Write(types.NewMessage(types.ReportCustomMessage, params))
 }
 
 func NewPipesContext(contextData *types.PipesContextData, messageParams map[string]json.RawMessage, messageWriter MessageWriter) (*PipesContext, error) {
