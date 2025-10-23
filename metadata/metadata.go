@@ -36,11 +36,9 @@ import (
 
 // FromInt creates a metadata value from an integer.
 //
-// Use this for numeric counts, IDs, or other integer values.
-//
 // Example:
 //
-//	"row_count": metadata.FromInt(1000)
+//	metadata.FromInt(1000)
 func FromInt(n int64) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -52,11 +50,9 @@ func FromInt(n int64) *types.PipesMetadataValue {
 
 // FromFloat creates a metadata value from a floating point number.
 //
-// Use this for decimal values, percentages, or other floating point measurements.
-//
 // Example:
 //
-//	"success_rate": metadata.FromFloat(0.95)
+//	metadata.FromFloat(0.95)
 func FromFloat(n float64) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -68,11 +64,9 @@ func FromFloat(n float64) *types.PipesMetadataValue {
 
 // FromBool creates a metadata value from a boolean.
 //
-// Use this for flags or binary states.
-//
 // Example:
 //
-//	"has_duplicates": metadata.FromBool(false)
+//	metadata.FromBool(false)
 func FromBool(b bool) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -84,11 +78,9 @@ func FromBool(b bool) *types.PipesMetadataValue {
 
 // FromText creates a metadata value from a text string.
 //
-// Use this for general string values, descriptions, or names.
-//
 // Example:
 //
-//	"table_name": metadata.FromText("users")
+//	metadata.FromText("users")
 func FromText(s string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -100,11 +92,9 @@ func FromText(s string) *types.PipesMetadataValue {
 
 // FromJSON creates a metadata value from a JSON object (map).
 //
-// Use this for structured data that should be displayed as JSON.
-//
 // Example:
 //
-//	"schema": metadata.FromJSON(map[string]any{
+//	metadata.FromJSON(map[string]any{
 //	    "columns": []string{"id", "name", "email"},
 //	    "version": 2,
 //	})
@@ -119,11 +109,9 @@ func FromJSON(m map[string]any) *types.PipesMetadataValue {
 
 // FromJSONArray creates a metadata value from a JSON array (slice).
 //
-// Use this for lists of values that should be displayed as JSON.
-//
 // Example:
 //
-//	"errors": metadata.FromJSONArray([]any{
+//	metadata.FromJSONArray([]any{
 //	    map[string]any{"line": 10, "message": "Invalid value"},
 //	    map[string]any{"line": 25, "message": "Missing field"},
 //	})
@@ -138,23 +126,19 @@ func FromJSONArray(a []any) *types.PipesMetadataValue {
 
 // FromURL creates a metadata value from a url.URL.
 //
-// The URL will be rendered as a clickable link in the Dagster UI.
-//
 // Example:
 //
 //	u, _ := url.Parse("https://example.com/report")
-//	"report_url": metadata.FromURL(u)
+//	metadata.FromURL(u)
 func FromURL(url *url.URL) *types.PipesMetadataValue {
 	return FromURLString(url.String())
 }
 
 // FromURLString creates a metadata value from a URL string.
 //
-// The URL will be rendered as a clickable link in the Dagster UI.
-//
 // Example:
 //
-//	"dashboard_url": metadata.FromURLString("https://example.com/dashboard")
+//	metadata.FromURLString("https://example.com/dashboard")
 func FromURLString(url string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -166,12 +150,9 @@ func FromURLString(url string) *types.PipesMetadataValue {
 
 // FromPath creates a metadata value from a file system path.
 //
-// Use this to reference files or directories. The path will be displayed
-// with file-specific formatting in the Dagster UI.
-//
 // Example:
 //
-//	"output_file": metadata.FromPath("/data/outputs/result.parquet")
+//	metadata.FromPath("/data/outputs/result.parquet")
 func FromPath(path string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -183,12 +164,9 @@ func FromPath(path string) *types.PipesMetadataValue {
 
 // FromNotebook creates a metadata value from notebook content.
 //
-// Use this to attach Jupyter notebook data or similar computational
-// notebook formats to your materialization.
-//
 // Example:
 //
-//	"analysis_notebook": metadata.FromNotebook(notebookJSON)
+//	metadata.FromNotebook(notebookJSON)
 func FromNotebook(notebook string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -205,7 +183,7 @@ func FromNotebook(notebook string) *types.PipesMetadataValue {
 //
 // Example:
 //
-//	"summary": metadata.FromMd("## Processing Results\n\n- Total rows: 1000\n- Errors: 0")
+//	metadata.FromMd("## Processing Results\n\n- Total rows: 1000\n- Errors: 0")
 func FromMd(md string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -223,7 +201,7 @@ func FromMd(md string) *types.PipesMetadataValue {
 //
 // Example:
 //
-//	"last_updated": metadata.FromTimestamp(time.Now().Unix())
+//	metadata.FromTimestamp(float64(time.Now().Unix()))
 func FromTimestamp(timestamp float64) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -240,7 +218,7 @@ func FromTimestamp(timestamp float64) *types.PipesMetadataValue {
 //
 // Example:
 //
-//	"source_asset": metadata.FromAsset("raw_user_data")
+//	metadata.FromAsset("raw_user_data")
 func FromAsset(asset string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -256,7 +234,7 @@ func FromAsset(asset string) *types.PipesMetadataValue {
 //
 // Example:
 //
-//	"triggered_job": metadata.FromJob("daily_processing_job")
+//	metadata.FromJob("daily_processing_job")
 func FromJob(job string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -273,7 +251,7 @@ func FromJob(job string) *types.PipesMetadataValue {
 //
 // Example:
 //
-//	"parent_run_id": metadata.FromDagsterRun(runID)
+//	metadata.FromDagsterRun(runID)
 func FromDagsterRun(dagsterRun string) *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: &types.RawValue{
@@ -289,7 +267,7 @@ func FromDagsterRun(dagsterRun string) *types.PipesMetadataValue {
 //
 // Example:
 //
-//	"optional_field": metadata.Null()
+//	metadata.Null()
 func Null() *types.PipesMetadataValue {
 	return &types.PipesMetadataValue{
 		RawValue: nil,
