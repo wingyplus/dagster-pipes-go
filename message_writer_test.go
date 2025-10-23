@@ -1,0 +1,39 @@
+package dagster_pipes
+
+import (
+	"encoding/json"
+	"io"
+	"os"
+	"testing"
+
+	"github.com/stretchr/testify/require"
+)
+
+func TestFileChannel(t *testing.T) {
+	f, err := os.CreateTemp("", "file_channel*")
+	require.NoError(t, err)
+	defer f.Close()
+
+	channel := &FileChannel{Path: f.Name()}
+	err = channel.Write(&PipesMessage{Method: Opened, Params: nil})
+	require.NoError(t, err)
+
+	content, err := io.ReadAll(f)
+	require.NoError(t, err)
+
+	var message PipesMessage
+	err = json.Unmarshal(content, &message)
+	require.NoError(t, err)
+	require.Equal(t, Opened, message.Method)
+	require.Nil(t, message.Params)
+}
+
+func TestDefaultMessageWriter(t *testing.T) {
+	t.Run("open with file path key", func(t *testing.T) {
+		writer := NewDefaultMessageWriter()
+		channel := writer.Open(map[string]json.RawMessage{
+			"path": json.RawMessage([]byte(`"tmp/my-file-path"`)),
+		})
+		require.Equal(t, &FileChannel{Path: "tmp/my-file-path"}, channel)
+	})
+}
