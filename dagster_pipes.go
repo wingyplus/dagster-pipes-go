@@ -31,14 +31,9 @@ func (context *PipesContext) ReportAssetMaterialization(
 	metadata map[string]*types.PipesMetadataValue,
 	dataVersion string,
 ) error {
-	metadataMap := make(map[string]any)
-	for k, v := range metadata {
-		metadataMap[k] = v
-	}
-
 	var params = map[string]any{
 		"asset_key":    assetKey,
-		"metadata":     metadataMap,
+		"metadata":     metadata,
 		"data_version": dataVersion,
 	}
 	return context.Channel.Write(&types.PipesMessage{
