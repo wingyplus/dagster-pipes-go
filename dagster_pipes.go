@@ -2,6 +2,8 @@ package dagster_pipes
 
 import (
 	"encoding/json"
+	"errors"
+	"slices"
 
 	"github.com/wingyplus/dagster-pipes-go/types"
 )
@@ -86,15 +88,44 @@ func (context *PipesContext) ReportAssetMaterialization(
 	metadata Metadata,
 	dataVersion string,
 ) error {
+	var dataVersionValue *string = nil
+	if dataVersion != "" {
+		dataVersionValue = &dataVersion
+	}
+
+	ak, err := context.resolveOptionallyPassedAssetKey(assetKey)
+	if err != nil {
+		return err
+	}
+
 	var params = map[string]any{
-		"asset_key":    assetKey,
+		"asset_key":    ak,
 		"metadata":     metadata,
-		"data_version": dataVersion,
+		"data_version": dataVersionValue,
 	}
 	return context.Channel.Write(&types.PipesMessage{
 		Method: types.ReportAssetMaterialization,
 		Params: params,
 	})
+}
+
+func (context *PipesContext) resolveOptionallyPassedAssetKey(assetKey string) (string, error) {
+	if assetKeys := context.Data.AssetKeys; len(assetKeys) > 0 {
+		if slices.Contains(context.Data.AssetKeys, assetKey) {
+			return resolveNoEmpty(assetKey)
+		}
+		return assetKeys[0], nil
+	}
+	return resolveNoEmpty(assetKey)
+}
+
+var ErrMissingAssetKey = errors.New("asset key is missing")
+
+func resolveNoEmpty(assetKey string) (string, error) {
+	if len(assetKey) == 0 {
+		return "", ErrMissingAssetKey
+	}
+	return assetKey, nil
 }
 
 // ReportAssetCheck reports the result of an asset check to Dagster.
