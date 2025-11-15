@@ -6,6 +6,8 @@ import (
 	"github.com/wingyplus/dagster-pipes-go/types"
 )
 
+type Metadata map[string]*types.PipesMetadataValue
+
 // PipesContext represents the connection to Dagster and provides methods
 // to interact with the Dagster orchestration process.
 //
@@ -81,7 +83,7 @@ func (context *PipesContext) Close(exception *types.PipesException) error {
 //	)
 func (context *PipesContext) ReportAssetMaterialization(
 	assetKey string,
-	metadata map[string]*types.PipesMetadataValue,
+	metadata Metadata,
 	dataVersion string,
 ) error {
 	var params = map[string]any{
@@ -125,7 +127,7 @@ func (context *PipesContext) ReportAssetCheck(
 	passed bool,
 	assetKey string,
 	severity *types.AssetCheckSeverity,
-	metadata map[string]*types.PipesMetadataValue,
+	metadata Metadata,
 ) error {
 	var params = map[string]any{
 		"asset_key":  assetKey,

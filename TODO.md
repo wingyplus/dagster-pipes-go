@@ -1,3 +1,4 @@
 - [ ] Introduce `Metadata` type for `map[string]*types.PipesMetadataValues`.
   - [ ] Replace this type in `examples/example-pipes/pipes/main.go`.
 - [ ] Introduce `Params` type for `map[string]any`.
+- [ ] Integration tests.
