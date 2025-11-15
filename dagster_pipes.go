@@ -8,6 +8,8 @@ import (
 	"github.com/wingyplus/dagster-pipes-go/types"
 )
 
+var ErrMissingAssetKey = errors.New("asset key is missing")
+
 type Metadata map[string]*types.PipesMetadataValue
 
 // PipesContext represents the connection to Dagster and provides methods
@@ -88,11 +90,6 @@ func (context *PipesContext) ReportAssetMaterialization(
 	metadata Metadata,
 	dataVersion string,
 ) error {
-	var dataVersionValue *string = nil
-	if dataVersion != "" {
-		dataVersionValue = &dataVersion
-	}
-
 	ak, err := context.resolveOptionallyPassedAssetKey(assetKey)
 	if err != nil {
 		return err
@@ -101,7 +98,7 @@ func (context *PipesContext) ReportAssetMaterialization(
 	var params = map[string]any{
 		"asset_key":    ak,
 		"metadata":     metadata,
-		"data_version": dataVersionValue,
+		"data_version": stringOrNil(dataVersion),
 	}
 	return context.Channel.Write(&types.PipesMessage{
 		Method: types.ReportAssetMaterialization,
@@ -117,15 +114,6 @@ func (context *PipesContext) resolveOptionallyPassedAssetKey(assetKey string) (s
 		return assetKeys[0], nil
 	}
 	return resolveNoEmpty(assetKey)
-}
-
-var ErrMissingAssetKey = errors.New("asset key is missing")
-
-func resolveNoEmpty(assetKey string) (string, error) {
-	if len(assetKey) == 0 {
-		return "", ErrMissingAssetKey
-	}
-	return assetKey, nil
 }
 
 // ReportAssetCheck reports the result of an asset check to Dagster.
@@ -160,8 +148,12 @@ func (context *PipesContext) ReportAssetCheck(
 	severity *types.AssetCheckSeverity,
 	metadata Metadata,
 ) error {
+	ak, err := context.resolveOptionallyPassedAssetKey(assetKey)
+	if err != nil {
+		return err
+	}
 	var params = map[string]any{
-		"asset_key":  assetKey,
+		"asset_key":  ak,
 		"check_name": checkName,
 		"passed":     passed,
 		"severity":   severity,
@@ -267,4 +259,18 @@ func OpenDasterPipes() (*PipesContext, error) {
 	}
 
 	return NewPipesContext(contextData, messageParams, messageWriter)
+}
+
+func resolveNoEmpty(assetKey string) (string, error) {
+	if len(assetKey) == 0 {
+		return "", ErrMissingAssetKey
+	}
+	return assetKey, nil
+}
+
+func stringOrNil(s string) *string {
+	if len(s) == 0 {
+		return nil
+	}
+	return &s
 }

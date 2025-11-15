@@ -72,6 +72,8 @@ func main() {
 		testMessageReportCustomMessage(*ctx, *customPayload)
 	case "test_message_report_asset_materialization":
 		testMessageReportAssetMaterialization(pipesCtx, *reportAssetMaterialization)
+	case "test_message_report_asset_check":
+		testMessageReportAssetCheck(pipesCtx, *reportAssetCheck)
 	}
 }
 
@@ -103,6 +105,46 @@ func testMessageReportAssetMaterialization(ctx *dagster_pipes.PipesContext, repo
 	}
 
 	if err := ctx.ReportAssetMaterialization(data.AssetKey, buildAssetMetadata(), data.DataVersion); err != nil {
+		panic(err)
+	}
+}
+
+func testMessageReportAssetCheck(ctx *dagster_pipes.PipesContext, reportAssetCheck string) {
+	if len(reportAssetCheck) == 0 {
+		panic("reportAssetCheck is required")
+	}
+
+	f, err := os.Open(reportAssetCheck)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	var data struct {
+		CheckName string `json:"checkName"`
+		Passed    bool   `json:"passed"`
+		AssetKey  string `json:"assetKey"`
+		Severity  string `json:"severity"`
+	}
+	if err := json.NewDecoder(f).Decode(&data); err != nil {
+		panic(err)
+	}
+
+	var severity *types.AssetCheckSeverity
+	if len(data.Severity) > 0 {
+		var sev types.AssetCheckSeverity
+		switch data.Severity {
+		case "ERROR":
+			sev = types.AssetCheckSeverityERROR
+		case "WARN":
+			sev = types.Warn
+		default:
+			panic("unknown severity: " + data.Severity)
+		}
+		severity = &sev
+	}
+
+	if err := ctx.ReportAssetCheck(data.CheckName, data.Passed, data.AssetKey, severity, buildAssetMetadata()); err != nil {
 		panic(err)
 	}
 }
