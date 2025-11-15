@@ -1,7 +1,7 @@
 [general]
 error_reporting = false
 
-[message]
+[messages]
 log = false
 report_custom_message = true
 report_asset_materialization = true
