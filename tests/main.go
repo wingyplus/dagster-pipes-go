@@ -69,7 +69,7 @@ func main() {
 	case "test_message_log":
 		testMessageLog(*ctx)
 	case "test_message_report_custom_message":
-		testMessageReportCustomMessage(*ctx, *customPayload)
+		testMessageReportCustomMessage(pipesCtx, *customPayload)
 	case "test_message_report_asset_materialization":
 		testMessageReportAssetMaterialization(pipesCtx, *reportAssetMaterialization)
 	case "test_message_report_asset_check":
@@ -81,8 +81,27 @@ func testMessageLog(ctx string) {
 	panic("unimplemented")
 }
 
-func testMessageReportCustomMessage(ctx, customPayload string) {
-	panic("unimplemented")
+func testMessageReportCustomMessage(ctx *dagster_pipes.PipesContext, customPayload string) {
+	if len(customPayload) == 0 {
+		panic("customPayload is required")
+	}
+
+	f, err := os.Open(customPayload)
+	if err != nil {
+		panic(err)
+	}
+	defer f.Close()
+
+	var data struct {
+		Payload any `json:"payload"`
+	}
+	if err := json.NewDecoder(f).Decode(&data); err != nil {
+		panic(err)
+	}
+
+	if err := ctx.ReportCustomMessage(data.Payload); err != nil {
+		panic(err)
+	}
 }
 
 func testMessageReportAssetMaterialization(ctx *dagster_pipes.PipesContext, reportAssetMaterialization string) {
